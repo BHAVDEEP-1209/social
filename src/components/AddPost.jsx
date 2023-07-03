@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal } from 'antd';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import {getDownloadURL, ref, uploadBytes} from "firebase/storage"
@@ -15,7 +15,7 @@ import Loader from './Loader.jsx';
 const AddPost = () => {
   const [open, setOpen] = useState(false);
   const collectionRef = collection(db ,"posts");
-  const currentUser = useSelector(state=>state.currentUser);
+  const currentUser = useSelector(state=>state.user.currentUser);
   const [formValues,setFormValues] = useState({ type : "image", desc : "",title : ""});
   const [loading,setLoading] = useState(false);
   // const [imgUrl,setImgUrl] = useState(""); 
@@ -42,10 +42,12 @@ const AddPost = () => {
         userName : currentUser.displayName,
         type : formValues.type,
         comments : [],
-        title : formValues.title
+        title : formValues.title,
+        likedBy : "",
+        image : currentUser.photoURL ? currentUser.photoURL : "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
       })
     })
-    setFormValues({type: "image"});
+    setFormValues({type: "image" ,title : "" , desc: ""});
     setLoading(false);
       setOpen(false);
 
@@ -74,10 +76,16 @@ const AddPost = () => {
           {
             loading && <Loader />
           }
-        <label htmlFor="file" className='imgLabel'>
+        
+           {
+            formValues.type!="other" && <>
+            <label htmlFor="file" className='imgLabel'>
             <AddPhotoAlternateIcon className='icon' />
             <span>Upload File</span>
-          </label>
+            </label>
+            </>
+           }
+          
 
         <input type="file" className='content' id="file"/>
         <input type="text" id="" className='text' placeholder='Type Title...' value={formValues.title} onChange={(e)=>setFormValues((prev)=>{return {...prev,title : e.target.value}})}/>

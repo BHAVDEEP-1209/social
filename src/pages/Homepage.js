@@ -7,6 +7,7 @@ import NotifyDiv from '../components/NotifyDiv'
 import AddPost from '../components/AddPost'
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore'
 import { db } from '../firebase'
+import { Empty } from 'antd';
 
 const Homepage = () => {
   const [posts,setPosts] = useState([]);
@@ -32,9 +33,15 @@ const Homepage = () => {
             <ProfileDiv />
             <div className="allPosts">
               {
+                posts.length>0 ? <>
+                {
                 posts?.map((ele,index)=>{
                   return <PostsDiv key={index} state={ele}/>
                 })
+              }
+                </> 
+                : 
+                <Empty />
               }
             </div>
             <NotifyDiv />

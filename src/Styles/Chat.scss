@@ -1,0 +1,98 @@
+.chatsDiv{
+    display: flex;
+    width: 80%;
+    background-color: #f1f1f1;
+    margin: 20px auto;
+    // border: 1px solid black;
+    height: 90vh;
+    font-family: "Montserrat", sans-serif;
+    border-radius: 10px;
+    overflow: hidden;
+
+    .chatDiv{
+        width: 100%;
+        .header{
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            height: 50px;
+            background-color: #eeeeee;
+            width: 98%;
+            span{
+                font-size: 25px;
+                font-weight: bold;
+            }
+        }
+
+        .chats{
+            overflow: scroll;
+            height: calc(100% - 160px);
+        }
+
+        .footer{
+            background-color: #eeeeee;
+            height: 50px;
+            padding: 20px;
+
+            .sendDiv{
+                display: flex;
+                padding-left: 30px;
+                padding-right: 30px;
+
+                .sendIcon{
+                    font-size: 40px;
+                    transform: rotate(-45deg);
+                    cursor: pointer;
+                }
+            }
+            input{
+                padding: 10px;
+                font-size: 20px;
+                border: none;
+                outline: none;
+                background-color: transparent;
+                width: 100%;
+            }
+        }
+    }
+    
+    .usersDiv{
+        width: 30%;
+        border-right: 1px solid #DC4734;
+
+        h1{
+            margin-left: 30px;
+            letter-spacing: 2px;
+        }
+
+    .userChat{
+        padding: 10px 20px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        cursor: pointer;
+        img{
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .details{
+            p{
+                margin: 0;
+                font-size: 14px;
+                font-family: "Montserrat", sans-serif;
+            }
+            .p1{
+                font-weight: 500;
+                font-size: 16px;
+            }
+        }
+
+        &:hover{
+            background-color: #fff;
+        }
+    }
+    }
+}

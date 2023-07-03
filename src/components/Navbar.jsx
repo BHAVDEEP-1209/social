@@ -1,14 +1,15 @@
 import React from 'react'
 import "../Styles/Navbar.scss"
 import ProfileButton from './ProfileButton'
+import { useNavigate } from 'react-router-dom'
 
 const Navbar = () => {
+  const navigate = useNavigate();
   return (
     <div className='nav'>
         <div className="left">
-            <span>Home</span>
-            <span>Message</span>
-            <span>Notification</span>
+            <span onClick={()=>navigate("/homepage")}>Home</span>
+            <span onClick={()=>navigate("/message")}>Message</span>
         </div>
         <div className="mid">
             <img src="https://htmldemo.net/adda/adda/assets/images/logo/logo.png" alt="" />

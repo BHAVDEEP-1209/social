@@ -10,3 +10,61 @@ body{
     color: red;
     margin: 0;
 }
+
+.messages{
+    position: relative;
+    padding-left: 30px;
+    .deleteIcon{
+        font-size: 30px;
+        position: sticky;
+        top: 10px;
+        left: 40px;
+        cursor: pointer;
+    }
+}
+
+.chatIcon {
+    color: green;
+    font-size: 10px;
+    margin-left: 10px;
+}
+.chatIcon2 {
+    color: red;
+    font-size: 10px;
+    margin-left: 10px;
+}
+
+.comet{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+
+    img{
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+
+    span{
+        padding: 10px 20px;
+        border-radius: 10px 10px 10px 0;
+        background-color: #f1f1f1;
+        font-family: 'Roboto', sans-serif;
+    }
+}
+
+.noNotify{
+    color: lightgray;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.postTime{
+    p{
+        width: 30%;
+    }
+}
+

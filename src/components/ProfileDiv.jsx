@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 
 const ProfileDiv = () => {
-  const currentUser = useSelector(state=>state.currentUser);
+  const currentUser = useSelector(state=>state.user.currentUser);
   return (
     <div className='profileDiv'>
       <img src="https://htmldemo.net/adda/adda/assets/images/banner/banner-small.jpg" alt="" />

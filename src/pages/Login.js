@@ -7,11 +7,12 @@ import { auth, db, provider } from "../firebase";
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
 import { useDispatch } from 'react-redux'
 import {setValue} from "../slices/userSlice.js"
+import Loading from '../components/Loading';
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // const [isLoading,setIsLoading] = useState(false);
+  const [isLoading,setIsLoading] = useState(false);
   const [formValues,setFormValues] = useState({email: "", password : ""});
 
 
@@ -51,6 +52,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     const email = formValues.email;
     const password = formValues.password;
 
@@ -64,6 +66,7 @@ const Login = () => {
       const userInfo = await getDoc(doc(db,"users",result.user.uid));
       
       dispatch(setValue(userInfo.data()));
+      setIsLoading(false);
       navigate("/homepage");
     } catch (err) {
       console.log(err);
@@ -76,6 +79,9 @@ const Login = () => {
     <div className='login'>
         <div className="formContainer">
            <div className="form">
+            {
+              isLoading && <Loading className="loading2"/>
+            }
            <h1>Welcome Back!</h1>
            <hr className='new'/>
            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt=""/>

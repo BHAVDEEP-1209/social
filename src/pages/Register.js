@@ -6,6 +6,7 @@ import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
 import { doc, setDoc } from 'firebase/firestore'
 import {v4 as uuid} from "uuid";
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
+import Loading from '../components/Loading'
 
 const Register = () => {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ const Register = () => {
   const [isSubmit, setIsSubmit] = useState(false);
   const [formValues,setFormValues] = useState({email: "", password : "", name: ""});
   const [img,setImg] = useState("");
+  const [isLoading,setIsLoading] = useState(false);
 
   const validate=(values)=>{
     const errors = {};
@@ -75,14 +77,14 @@ const Register = () => {
   useEffect(()=>{
     const setData=async()=>{
       console.log("sadsd");
-      // setIsLoading(true);
+      setIsLoading(true);
       const displayName = formValues.name;
       const email = formValues.email;
       const password = formValues.password;
 
       try {
         const result = await createUserWithEmailAndPassword(auth, email, password);
-        // setIsLoading(false);
+        setIsLoading(false);
         navigate("/");
         await updateProfile(result.user,{
           displayName,
@@ -110,6 +112,10 @@ const Register = () => {
     <div className='login'>
     <div className="formContainer">
        <div className="form">
+        {
+          isLoading && <Loading className="loading2"/>
+        }
+       
        <h1>Welcome Back!</h1>
        <hr className='new'/>
         {/* <Avatar className='avatar' /> */}

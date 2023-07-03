@@ -6,7 +6,7 @@ import { addDoc, arrayUnion, collection, doc, serverTimestamp, updateDoc } from 
 import { db } from '../firebase';
 
 const PostsDiv = (props) => {
-  const currentUser = useSelector(state=>state.currentUser);
+  const currentUser = useSelector(state=>state.user.currentUser);
   const notifyCollection = collection(db,"notices");
   const [comment,setComment] = useState(false);
   const [text,setText] = useState("");
@@ -14,28 +14,44 @@ const PostsDiv = (props) => {
   const handleLike=async()=>{
     const docRef = doc(db,"posts",props.state.id);
     const likeNumber = props.state.like;
-      await updateDoc(docRef,{
-        like : likeNumber+1
-      })
+
+        if(props.state.likedBy!=currentUser.displayName){
+          await updateDoc(docRef,{
+            like : likeNumber+1,
+            likedBy : currentUser.displayName
+          })  
       await addDoc(notifyCollection,{
         date : serverTimestamp(),
-        msg : `${currentUser.displayName} liked ${props.state.title}`
-      })
+        msg : `${currentUser.displayName} liked ${props.state.title}`,
+        img : currentUser.photoURL
+      })  
+        }
+
+
   }
 
   const handleComments = async()=>{
     const docRef = doc(db,"posts",props.state.id);
     await updateDoc(docRef,{
       comments : arrayUnion({
-        msg : `${currentUser.displayName} commented ${text}`
+        msg : `${currentUser.displayName} commented ${text}`,
+        img : currentUser.photoURL
       })
     })
 
     await addDoc(notifyCollection,{
       date : serverTimestamp(),
-      msg : `${currentUser.displayName} commented on ${props.state.title}`
+      msg : `${currentUser.displayName} commented on ${props.state.title}`,
+      img : currentUser.photoURL
     })
+
+    setText("");
   }
+
+ 
+    const handleKey = (e)=>{
+      e.code === "Enter" && handleComments();
+    }
 
   const date = props.state.date?.seconds ? new Date(props.state.date.seconds * 1000) : null;
   const formattedTime = date ? date.toLocaleTimeString() : null;
@@ -46,8 +62,9 @@ const PostsDiv = (props) => {
       <div className="userInfo">
       {/* <img src="https://htmldemo.net/adda/adda/assets/images/profile/profile-35x35-1.jpg" alt="" />
       */}
-      <img src={currentUser?.photoURL!=undefined ? currentUser.photoURL : "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"} alt="" />
-        <div>
+      {/* <img src={currentUser?.photoURL ? currentUser.photoURL : "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"} alt="" /> */}
+      <img src={props.state.image} alt="" />
+        <div className='postTime'>
           <span>{props.state.userName}</span>
           {/* <p>{props.state.date?.seconds}</p> */}
           <p>{formattedTime}</p>
@@ -68,14 +85,19 @@ const PostsDiv = (props) => {
         <CommentIcon style={{color:"#DC4734",cursor:"pointer"}} className='comment' onClick={()=>setComment(!comment)}/>
       </div>
       <div className={`commetsDiv ${comment && "display"}`}>
-      <input type="text" name="" id="" placeholder='type comment...' value={text} onChange={(e)=>setText(e.target.value)}/>
-      <button onClick={handleComments}>add</button>
+      <input type="text" name="" id="" placeholder='type comment...' value={text}  onKeyDown={handleKey} onChange={(e)=>{setText(e.target.value) }}/>
+      {/* <button onClick={handleComments}>add</button> */}
 
-        {
+       <div className="loadComments">
+       {
           props.state.comments?.map((ele)=>{
-            return <h6>{ele.msg}</h6>
+            return <div className="comet">
+              <img src={ele.img} alt="" />
+              <span>{ele.msg}</span>
+            </div>
           })
         }
+       </div>
       </div>
       {/* </div> */}
     </div>

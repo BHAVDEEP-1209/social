@@ -7,12 +7,13 @@ import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useNavigate } from 'react-router-dom';
 import { handleLogOut } from '../slices/userSlice';
+import { handleChatLogOut } from '../slices/chatSlice';
 
 export default function ProfileButton() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const currentUser = useSelector(state=>state.currentUser);
+  const currentUser = useSelector(state=>state.user.currentUser);
 
   const open = Boolean(anchorEl);
 
@@ -26,6 +27,7 @@ export default function ProfileButton() {
 
   const handleSignOut = async()=>{
     handleClose();
+    dispatch(handleChatLogOut());
     dispatch(handleLogOut());
     navigate("/");
     await updateDoc(doc(db, "users", currentUser.uid), {
@@ -45,7 +47,7 @@ export default function ProfileButton() {
       >
         {/* <img src="https://htmldemo.net/adda/adda/assets/images/profile/profile-35x35-1.jpg" alt="" /> */}
         {
-          <img src={currentUser?.photoURL!=undefined ? currentUser.photoURL : "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"} alt="" className='navImg'/>
+          <img src={currentUser?.photoURL ? currentUser.photoURL : "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"} alt="" className='navImg'/>
         }
       </Button>
       <Menu
@@ -57,8 +59,7 @@ export default function ProfileButton() {
           'aria-labelledby': 'basic-button',
         }}
       >
-        <MenuItem onClick={handleClose}>Profile</MenuItem>
-        <MenuItem onClick={handleClose}>My account</MenuItem>
+        {/* <MenuItem onClick={()=>navigate("/profile")}>Profile</MenuItem> */}
         <MenuItem onClick={handleSignOut}>Logout</MenuItem>
       </Menu>
     </div>
