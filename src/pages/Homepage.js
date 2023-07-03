@@ -4,65 +4,39 @@ import Navbar from '../components/Navbar'
 import ProfileDiv from '../components/ProfileDiv'
 import PostsDiv from '../components/PostsDiv'
 import NotifyDiv from '../components/NotifyDiv'
-import AddCircleIcon from '@mui/icons-material/AddCircle';
 import AddPost from '../components/AddPost'
-import { postCollection } from '../firebase'
-import { getDocs, onSnapshot, orderBy, query } from 'firebase/firestore'
+import { collection, onSnapshot, orderBy, query } from 'firebase/firestore'
+import { db } from '../firebase'
 
 const Homepage = () => {
   const [posts,setPosts] = useState([]);
-  // const qry=query(postCollection);
+
   useEffect(()=>{
-   
-      
-  //     // const docs = await getDocs(qry);
-  //     // let arr=[]
-  //     // docs.forEach((doc)=>{
-  //     //   arr.push(doc.data())
-  //     //   console.log(doc.data())
-  //     // })
-    
-
-    
-
-    const unsub = onSnapshot(postCollection,(doc)=>{
-      doc.forEach((doc)=>{
-      //  console.log("printing",doc.data());
-        doc.exists() && <>
-        {
-          (!posts.includes(doc.data())) && setPosts((prev)=>{
-            console.log("item");
-            return [
-              
-              ...prev,
-              doc.data()
-            ]
-          })
-        }
-        </>
-        // doc.exists() && console.log(doc.data());
+    const collectionRef = collection(db,"posts");
+    const q = query(collectionRef,orderBy("date","desc"));
+    onSnapshot(q,snapShot=>{
+      setPosts([])
+      snapShot.forEach((doc)=>{
+        doc.exists() && setPosts((prev)=>{return [...prev , doc.data()]});
       })
-    });
-
-    return ()=>{
-      unsub();
-    }
-  
+    })
+     
+        
   },[])
-  console.log(posts);
+  
   return (
     <div className='home'>
       
         <Navbar />
         <div className="container">
             <ProfileDiv />
-            {/* <PostsDiv /> */}
-
-            {
-              posts.map((ele)=>{
-                return <PostsDiv state={ele} />
-              })
-            }
+            <div className="allPosts">
+              {
+                posts?.map((ele,index)=>{
+                  return <PostsDiv key={index} state={ele}/>
+                })
+              }
+            </div>
             <NotifyDiv />
         </div>
         <AddPost />

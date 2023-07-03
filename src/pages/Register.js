@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import "../Styles/Login.scss"
-import { Avatar } from '@mui/material'
-import GoogleButton from 'react-google-button'
 import { Link, useNavigate } from 'react-router-dom'
-import {auth, db } from "../firebase"
+import {auth, db, storage } from "../firebase"
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
 import { doc, setDoc } from 'firebase/firestore'
+import {v4 as uuid} from "uuid";
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 
 const Register = () => {
   const navigate = useNavigate();
@@ -13,6 +13,7 @@ const Register = () => {
   const [formErrors,setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [formValues,setFormValues] = useState({email: "", password : "", name: ""});
+  const [img,setImg] = useState("");
 
   const validate=(values)=>{
     const errors = {};
@@ -60,6 +61,17 @@ const Register = () => {
     })
   }
 
+  const handleFileChange=async(e)=>{
+    const file = e.target.files[0];
+    const imageRef = ref(storage , `images/${uuid()}`);
+    await uploadBytes(imageRef,file).then((snap)=>{
+      console.log("file uploaded!");
+    })
+    await getDownloadURL(imageRef).then(url=>{
+      setImg(url);
+    })
+  }
+
   useEffect(()=>{
     const setData=async()=>{
       console.log("sadsd");
@@ -74,12 +86,14 @@ const Register = () => {
         navigate("/");
         await updateProfile(result.user,{
           displayName,
+          photoUrl:img
         });
         await setDoc(doc(db, "users", result.user.uid), {
           uid : result.user.uid,
           displayName,
           email,
-          status : "offline"
+          status : "offline",
+          photoURL : img
         });
         // await setDoc(doc(db,"userChats",result.user.uid),{});
       } catch (error) {
@@ -90,6 +104,7 @@ const Register = () => {
       setData();
     }
   },[formErrors])
+
 
   return (
     <div className='login'>
@@ -103,6 +118,7 @@ const Register = () => {
         <div className="inputDiv">
             <input type="text" placeholder='displayName' name="name" value={formValues.name} onChange={handleChange}/>
             <p className='error'>{formErrors.name}</p>
+            <input type="file" onChange={handleFileChange}/>
             <input type="text" placeholder='email' name="email" value={formValues.email} onChange={handleChange}/>
             <p className='error'>{formErrors.email}</p>
             <input type="text" placeholder='password' name="password" value={formValues.password} onChange={handleChange}/>

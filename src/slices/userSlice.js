@@ -4,7 +4,7 @@ const initialState = {
   currentUser : {
     displayName : "",
     uid : "",
-    // photoURL : "",
+    photoURL : "",
     email : ""
   },
   isLoggedIn : false
@@ -18,7 +18,7 @@ export const userSlice = createSlice({
       console.log(action.payload.displayName);
         state.currentUser.displayName = action.payload.displayName;
         state.currentUser.uid = action.payload.uid;
-        // state.currentUser.photoURL = action.payload.photoURL;
+        state.currentUser.photoURL = action.payload.photoURL;
         state.isLoggedIn = true;
         state.currentUser.email = action.payload.email; 
     },

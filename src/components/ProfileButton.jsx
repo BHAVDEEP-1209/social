@@ -27,10 +27,11 @@ export default function ProfileButton() {
   const handleSignOut = async()=>{
     handleClose();
     dispatch(handleLogOut());
+    navigate("/");
     await updateDoc(doc(db, "users", currentUser.uid), {
       status : "offline"
     });
-    navigate("/");
+    
 }
 
   return (
@@ -42,7 +43,10 @@ export default function ProfileButton() {
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}
       >
-        <img src="https://htmldemo.net/adda/adda/assets/images/profile/profile-35x35-1.jpg" alt="" />
+        {/* <img src="https://htmldemo.net/adda/adda/assets/images/profile/profile-35x35-1.jpg" alt="" /> */}
+        {
+          <img src={currentUser?.photoURL!=undefined ? currentUser.photoURL : "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"} alt="" className='navImg'/>
+        }
       </Button>
       <Menu
         id="basic-menu"

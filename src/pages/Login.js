@@ -1,28 +1,30 @@
 import React, { useState } from 'react'
 import "../Styles/Login.scss"
-import { Avatar } from '@mui/material'
 import GoogleButton from 'react-google-button'
 import { Link, useNavigate } from 'react-router-dom'
 import { signInWithEmailAndPassword , signInWithPopup} from "firebase/auth";
 import { auth, db, provider } from "../firebase";
-import { doc, setDoc, updateDoc } from 'firebase/firestore'
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
 import { useDispatch } from 'react-redux'
 import {setValue} from "../slices/userSlice.js"
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [isLoading,setIsLoading] = useState(false);
+  // const [isLoading,setIsLoading] = useState(false);
   const [formValues,setFormValues] = useState({email: "", password : ""});
 
 
   const handleGoogleSignIn=async()=>{
     try{
       const response = await signInWithPopup(auth,provider);
+      console.log(response.user);
       dispatch(setValue(response.user));
+
       // await updateDoc(doc(db, "users", response.user.uid), {
       //   status : "online"
       // });
+      
       await setDoc(doc(db, "users", response.user.uid), {
         uid : response.user.uid,
         displayName : response.user.displayName,
@@ -58,7 +60,10 @@ const Login = () => {
       await updateDoc(doc(db, "users", result.user.uid), {
         status : "online"
       });
-      dispatch(setValue(result.user));
+
+      const userInfo = await getDoc(doc(db,"users",result.user.uid));
+      
+      dispatch(setValue(userInfo.data()));
       navigate("/homepage");
     } catch (err) {
       console.log(err);
